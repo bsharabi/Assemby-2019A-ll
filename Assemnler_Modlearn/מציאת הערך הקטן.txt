@@ -1,0 +1,41 @@
+DSEG SEGMENT
+       BLOCK DB 7,4,2,9,12,0F0H,8,9,10,11
+       BIG DB ?
+       SMALL DB ?
+DSEG ENDS
+
+       SSEG SEGMENT STACK
+DB 100H DUP(?)	
+       SSEG ENDS
+
+       CSEG SEGMENT
+       ASSUME DS:DSEG, SS:SSEG, CS:CSEG
+
+MAIN:
+       MOV AX,DSEG
+	   MOV DS,AX
+       MOV ES,AX
+      
+       LEA BX,BLOCK
+       MOV AL,[BX]
+       MOV BIG,AL
+       MOV SMALL,AL
+       MOV CX,9
+AGAIN:
+       INC BX
+       MOV AL,[BX]
+       CMP AL,BIG
+       JNA HEM1
+       MOV BIG,AL
+HEM1:
+       CMP AL,SMALL
+       JNB HEM2
+       MOV SMALL,AL
+HEM2:
+       LOOP AGAIN
+
+MOV AX,4C00H
+INT 21H
+
+      CSEG ENDS
+END MAIN    
